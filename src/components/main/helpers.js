@@ -9,17 +9,6 @@ export const generateMatrix = (rows, columns) =>  (
   ))
 )
 
-// export const generateMatrix = (rows, columns) => {
-//   let array = []
-//   for (let i = 0; i < rows - 1; i++) {
-//     array[i] = []
-//     for (let j = 0; j < columns - 1; j++) {
-//       array[i][j] = Math.round(Math.random()) === 0 ? DEAD : ALIVE
-//     }
-//   }
-//  return array
-// }
-
 export const isCellAlive = cell => cell === ALIVE
 
 const isTopLeftEdge = (rowIndex, columnIndex) => rowIndex === 0 && columnIndex === 0

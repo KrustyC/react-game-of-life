@@ -12,8 +12,8 @@ const Div = styled.div`
 `
 const Row = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: row;
-  width: 300px;
 `
 
 const Cell = styled.div`
@@ -21,36 +21,59 @@ const Cell = styled.div`
   justify-content: center;
   align-items: center;
   height: 10px;
-  width: 10px;
+  min-width: 10px;
   background: ${({ alive }) => alive ? '#000' : '#FFF'};
   border: 1px solid black;
 `
 
-class GameOfLife extends Component {
-  static propTypes = {
-    rows: PropTypes.number,
-    columns: PropTypes.number
-  }
+const Button = styled.button`
+  background: #218c74 !important;
+  border: 1px solid #218c74 !important;
+  color: #fff !important;
+  font-size: 16px;
+  width: 200px;
+  height: 40px;
 
-  static defaultProps = {
-    rows: 50,
-    columns: 50
+  &:disabled {
+    opacity: 0.9;
+  }
+`
+
+class Game extends Component {
+  static propTypes = {
+    rows: PropTypes.number.isRequired,
+    columns: PropTypes.number.isRequired
   }
 
   constructor(props) {
     super(props)
 
     this.state = {
+      interval: null,
       nRows: props.rows,
       nColumns: props.columns,
       world: generateMatrix(props.rows, props.columns)
     }
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.rows !== prevState.nRows || nextProps.columns !== prevState.nColumns) {
+      clearInterval(prevState.interval)
+      return { 
+        interval: null,
+        nRows: nextProps.rows,
+        nColumns: nextProps.columns,
+        world: generateMatrix(nextProps.rows, nextProps.columns)
+      }
+    }
+    return prevState
+  }
+
   start = () => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       this.setState(( { world, nRows, nColumns }) => ({ world: getNextStep(world, nRows, nColumns) }))
     }, 100)
+    this.setState({ interval })
   }
 
   render() {
@@ -65,12 +88,12 @@ class GameOfLife extends Component {
           </Row>
         ))}
         <br />
-        <button class="button is-info is-medium" onClick={this.start}>
-          Start
-        </button>
+        <Button className="button" onClick={this.start}>
+          Start the game
+        </Button>
       </Div>
     )
   }
 }
 
-export default GameOfLife
+export default Game
